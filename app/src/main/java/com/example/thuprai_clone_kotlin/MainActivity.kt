@@ -17,9 +17,23 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_login)
+        setContent {
+            Thuprai_Clone_KotlinTheme {
+                // A surface container using the 'background' color from the theme
+                Scaffold {
+                    setContentView(R.layout.activity_login)
+                }
+            }
+        }
+
+
+
+
     }
 }
+
+
+
 
 
 
