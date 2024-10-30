@@ -12,7 +12,6 @@ import android.widget.Toast
 import com.example.thuprai_clone_kotlin.databinding.ActivityLoginBinding
 
 import com.example.thuprai_clone_kotlin.R
-import com.example.thuprai_clone_kotlin.data.model.LoginResponse
 
 class LoginActivity : AppCompatActivity() {
 
@@ -24,7 +23,6 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         val username = binding.username
         val password = binding.password
         val login = binding.login
@@ -48,7 +46,9 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.loginResult.observe(this@LoginActivity, Observer {
             val loginResult = it ?: return@Observer
 
-            loading.visibility = View.GONE
+            if (loading != null) {
+                loading.visibility = View.GONE
+            }
             if (loginResult.error != null) {
                 showLoginFailed(loginResult.error)
             }
@@ -75,9 +75,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateUiWithUser(model: LoginResponse?) {
+    private fun updateUiWithUser(model: LoggedInUserView?) {
         val welcome = getString(R.string.welcome)
-        val displayName = model?.fullName
+        val displayName = model?.displayName
         // TODO : initiate successful logged in experience
         Toast.makeText(
             applicationContext,

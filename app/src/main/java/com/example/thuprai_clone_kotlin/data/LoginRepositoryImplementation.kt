@@ -15,15 +15,11 @@ class LoginRepositoryImplementation(private val apiService: ApiService) : LoginR
         try {
             val response = apiService.login(LoginRequest(username, password))
             if (response.isSuccessful) {
-                return  Result.Success(response.body()!!)
+                return Result.Success(response.body()!!)
             }
             return Result.Error(IOException("Error logging in"))
         } catch (e: Throwable) {
             return Result.Error(IOException("Error logging in", e))
         }
-    }
-
-    fun logout() {
-
     }
 }
