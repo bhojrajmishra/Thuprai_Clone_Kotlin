@@ -9,7 +9,6 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ApiService {
-    @POST("login/")
+    @POST("v1/api/login/")
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
-
 }

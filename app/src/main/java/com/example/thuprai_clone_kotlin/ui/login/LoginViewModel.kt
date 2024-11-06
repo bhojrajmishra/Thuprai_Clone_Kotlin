@@ -1,56 +1,26 @@
 package com.example.thuprai_clone_kotlin.ui.login
 
-//import LoginViewModelFactory
-import SecureStorageService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
-import com.example.thuprai_clone_kotlin.ApiService
-import com.example.thuprai_clone_kotlin.data.Result
-import com.example.thuprai_clone_kotlin.R
-import com.example.thuprai_clone_kotlin.data.LoginRepositoryImplementation
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import ui.login.repository.LoginRepositoryImplementation
 
-class LoginViewModel(private val loginRepository: LoginRepositoryImplementation ,
+class LoginViewModel : ViewModel() {
 
-) : ViewModel() {
-
-    private val _loginForm = MutableLiveData<LoginFormState>()
-    val loginFormState: LiveData<LoginFormState> = _loginForm
-    // Create the factory
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
 
-   suspend fun login (username: String, password: String) {
-        // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
-        if (result is Result.Success) {
-            _loginResult.value = LoginResult(success = LoggedInUserView( displayName = result.data.fullName, token = result.data.token, fullName = result.data.fullName, email = result.data.email))
-        } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
-        }
-    }
-    
-    fun loginDataChanged(username: String, password: String) {
-        if (!isUserNameValid(username)) {
-            _loginForm.value = LoginFormState(usernameError = R.string.invalid_username)
-        } else if (!isPasswordValid(password)) {
-            _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)
-        } else {
-            _loginForm.value = LoginFormState(isDataValid = true)
-        }
-    }
 
-    // A placeholder username validation check
-    private fun isUserNameValid(username: String): Boolean {
-        return if (username.contains('@')) {
-            Patterns.EMAIL_ADDRESS.matcher(username).matches()
-        } else {
-            username.isNotBlank()
+    private val loginRepository = LoginRepositoryImplementation()
+
+    fun login(username: String, password: String) {
+        viewModelScope.launch {
+            val response = loginRepository.login(username, password)
+            if (response != null) {
+                _loginResult.value = LoginResult(success = response)
+            }
         }
-    }
-    // A placeholder password validation check
-    private fun isPasswordValid(password: String): Boolean {
-        return password.length > 5
     }
 }

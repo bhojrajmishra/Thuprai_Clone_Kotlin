@@ -1,9 +1,8 @@
 package com.example.thuprai_clone_kotlin.ui.login
 
-/**
- * Authentication result : success (user details) or error message.
- */
-data class LoginResult(
-    val success: LoggedInUserView? = null,
-    val error: Int? = null
-)
+import com.example.thuprai_clone_kotlin.data.model.LoginResponse
+
+class LoginResult(success: LoginResponse) {
+    var success: LoggedInUserView? = null
+    var error: Int? = null
+}
