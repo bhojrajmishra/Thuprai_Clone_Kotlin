@@ -8,10 +8,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ui.login.repository.LoginRepositoryImplementation
 
 class LoginViewModel(
-    private val loginRepository: LoginRepository,
-    private val secureStorage: SecureStorageService
+    private val secureStorage: SecureStorageService,
+    private val loginRepository: LoginRepositoryImplementation
 ) : ViewModel() {
 
     // UI State
@@ -41,8 +42,7 @@ class LoginViewModel(
                     password = password
                 )
 
-                val response = loginRepository.login()
-                handleLoginResponse(response, email, password)
+                val response = loginRepository.login(loginRequest)
             } catch (e: Exception) {
                 _errorMessage.value = "Login failed: ${e.message}"
             } finally {

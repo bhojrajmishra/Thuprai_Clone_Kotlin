@@ -1,20 +1,16 @@
 package com.example.thuprai_clone_kotlin
 
-import android.content.Context
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitClient () {
-    private  val BASE_URL = "https://tbe.thuprai.com/v1/"
-    private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(CustomInterceptor(
-        ))
-        .build()
-    val retrofit: Retrofit = Retrofit.Builder()
+object RetrofitClient {
+    private const val BASE_URL = "https://tbe.thuprai.com/"
+    private val client = OkHttpClient.Builder().build()
+    val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
-        .client(okHttpClient)
+        .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-    val apiService: ApiService = retrofit.create(ApiService::class.java)
+    val apiService = retrofit.create(ApiService::class.java)
 }

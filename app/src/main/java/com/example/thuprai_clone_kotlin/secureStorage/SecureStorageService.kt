@@ -1,8 +1,10 @@
 import android.content.Context
-import android.content.SharedPreferences
 
-public class SecureStorageService(context: Context) {
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("secure_storage", Context.MODE_PRIVATE)
+class SecureStorageService(private val context: Context) {
+    private val sharedPreferences = context.getSharedPreferences(
+        "secure_prefs",
+        Context.MODE_PRIVATE
+    )
 
     fun saveData(key: String, value: String) {
         sharedPreferences.edit().putString(key, value).apply()
@@ -12,18 +14,7 @@ public class SecureStorageService(context: Context) {
         return sharedPreferences.getString(key, null)
     }
 
-    fun deleteData(key: String) {
-        sharedPreferences.edit().remove(key).apply()
-    }
-
-    companion object {
-        private var instance: SecureStorageService? = null
-
-        fun getInstance(context: Context): SecureStorageService {
-            if (instance == null) {
-                instance = SecureStorageService(context)
-            }
-            return instance!!
-        }
+    fun clearData() {
+        sharedPreferences.edit().clear().apply()
     }
 }

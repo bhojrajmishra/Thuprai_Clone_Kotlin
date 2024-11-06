@@ -6,5 +6,5 @@ import retrofit2.Response
 
 
 interface LoginRepository {
-    suspend fun login(username: String, password: String): LoginResponse?
+    suspend fun login(loginRequest: LoginRequest): Response<LoginResponse>
 }
