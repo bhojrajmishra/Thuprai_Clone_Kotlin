@@ -2,6 +2,7 @@ package com.example.thuprai_clone_kotlin.ui.login
 
 import LoginViewModel
 import SecureStorageService
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.example.thuprai_clone_kotlin.R
+import com.example.thuprai_clone_kotlin.RetrofitClient
 import com.example.thuprai_clone_kotlin.ui.login.repository.LoginRepositoryImplementation
 
 class LoginActivity : AppCompatActivity() {
@@ -55,10 +57,10 @@ class LoginActivity : AppCompatActivity() {
         forgotPasswordButton.setOnClickListener {
             navigateToForgotPassword()
         }
-
-        signUpButton.setOnClickListener {
+//
+//        signUpButton.setOnClickListener {
 //            navigateToSignUp()
-        }
+//        }
 
 
     }
@@ -104,16 +106,22 @@ class LoginActivity : AppCompatActivity() {
         val password = passwordEditText.text.toString()
         val viewModel = LoginViewModel(
             secureStorage = SecureStorageService(this),
-            loginRepository = LoginRepositoryImplementation()
+            loginRepository = LoginRepositoryImplementation(
+                apiService = RetrofitClient.create(this)
+            )
         )
-     val response = viewModel.login(email, password)
-        if (response != null) {
-            // Login successful
-            // Navigate to home screen
-//            navigateToHome()
-        } else {
-            // Login failed
-            // Show error message
+        viewModel.login(email, password)
+        viewModel.loginSuccess.observe(this) { loginSuccess ->
+            if (loginSuccess) {
+                println("Login successful")
+            }
+            else {
+                // Show error message
+                viewModel.errorMessage.observe(this) { errorMessage ->
+                    // Show error message
+                    println("Error: $errorMessage")
+                }
+            }
         }
     }
 

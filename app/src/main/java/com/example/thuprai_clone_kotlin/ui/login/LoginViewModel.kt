@@ -1,25 +1,17 @@
-import com.example.thuprai_clone_kotlin.ui.login.model.LoginResponse
-
-// LoginViewModel.kt
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.thuprai_clone_kotlin.ui.login.model.LoginRequest
-import kotlinx.coroutines.launch
 import com.example.thuprai_clone_kotlin.ui.login.repository.LoginRepositoryImplementation
+import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val secureStorage: SecureStorageService,
     private val loginRepository: LoginRepositoryImplementation
 ) : ViewModel() {
-
-    // UI State
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _isPasswordVisible = MutableLiveData(false)
-    val isPasswordVisible: LiveData<Boolean> = _isPasswordVisible
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
@@ -27,10 +19,9 @@ class LoginViewModel(
     private val _loginSuccess = MutableLiveData<Boolean>()
     val loginSuccess: LiveData<Boolean> = _loginSuccess
 
-    // Function to handle login
     fun login(email: String, password: String) {
         if (!validateInput(email, password)) {
-            _errorMessage.value = "Please enter valid data"
+            _errorMessage.value = "Please enter valid credentials"
             return
         }
         _isLoading.value = true
@@ -40,10 +31,21 @@ class LoginViewModel(
                     username = email,
                     password = password
                 )
-
                 val response = loginRepository.login(loginRequest)
+
+                if (response.isSuccessful) {
+                    response.body()?.let { loginResponse ->
+                        // Save user details securely
+                        saveUserDetails(loginResponse.token ?: "", email, password)
+                        _loginSuccess.postValue(true)
+                    } ?: run {
+                        _errorMessage.postValue("Login response was empty")
+                    }
+                } else {
+                    _errorMessage.postValue("Login failed: ${response.message()}")
+                }
             } catch (e: Exception) {
-                _errorMessage.value = "Login failed: ${e.message}"
+                _errorMessage.postValue("Login failed: ${e.message}")
             } finally {
                 _isLoading.value = false
             }
@@ -55,21 +57,12 @@ class LoginViewModel(
                 && password.length >= 6
     }
 
-    private suspend fun handleLoginResponse(
-        response: LoginResponse?,
-        email: String,
-        password: String
-    ) {
-
-    }
-
     private suspend fun saveUserDetails(token: String, email: String, password: String) {
         secureStorage.apply {
-            saveData("token", token)
+            saveData("auth_token", token)
             saveData("email", email)
             saveData("password", password)
             saveData("isLoggedIn", "true")
         }
     }
-
 }

@@ -1,14 +1,12 @@
 package com.example.thuprai_clone_kotlin.ui.login.model
 
 data class LoginResponse(
-val fullName: String,
-val email: String,
-val id: Long,
-val token: String,
-val isStaff: Boolean,
-val roles: List<Any?>,
-val organizations: Organizations
+    val token: String,
+    val user: User
 )
 
-class Organizations
-
+data class User(
+    val id: Int,
+    val email: String,
+    val username: String
+)
