@@ -1,14 +1,13 @@
-import com.example.thuprai_clone_kotlin.data.model.LoginRequest
-import com.example.thuprai_clone_kotlin.data.model.LoginResponse
-import ui.login.repository.LoginRepository
+import com.example.thuprai_clone_kotlin.ui.login.model.LoginResponse
 
 // LoginViewModel.kt
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.thuprai_clone_kotlin.ui.login.model.LoginRequest
 import kotlinx.coroutines.launch
-import ui.login.repository.LoginRepositoryImplementation
+import com.example.thuprai_clone_kotlin.ui.login.repository.LoginRepositoryImplementation
 
 class LoginViewModel(
     private val secureStorage: SecureStorageService,

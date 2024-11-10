@@ -1,7 +1,7 @@
 package com.example.thuprai_clone_kotlin
 
-import com.example.thuprai_clone_kotlin.data.model.LoginRequest
-import com.example.thuprai_clone_kotlin.data.model.LoginResponse
+import com.example.thuprai_clone_kotlin.ui.login.model.LoginRequest
+import com.example.thuprai_clone_kotlin.ui.login.model.LoginResponse
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
